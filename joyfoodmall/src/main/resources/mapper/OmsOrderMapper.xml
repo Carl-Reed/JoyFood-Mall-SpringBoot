@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lpw.joyfoodmall.mapper.OmsOrderMapper">
+
+    <resultMap id="orderDetailMap" type="com.lpw.joyfoodmall.entity.OmsOrder" autoMapping="true">
+        <id property="id" column="id" />
+
+        <collection property="itemList" ofType="com.lpw.joyfoodmall.entity.OmsOrderItem" autoMapping="true">
+            <id property="id" column="item_id" />
+            <result property="orderId" column="id" />
+            <result property="productName" column="product_name"/>
+            <result property="productPic" column="product_pic"/>
+            <result property="productPrice" column="product_price"/>
+            <result property="productQuantity" column="product_quantity"/>
+            <result property="productAttr" column="product_attr"/>
+        </collection>
+    </resultMap>
+
+    <select id="getListWithItem" resultMap="orderDetailMap">
+        SELECT
+        o.*,
+        oi.id as item_id,
+        oi.product_name,
+        oi.product_pic,
+        oi.product_price,
+        oi.product_quantity,
+        oi.product_attr,
+        oi.product_sku_id
+        FROM oms_order o
+        LEFT JOIN oms_order_item oi ON o.id = oi.order_id
+        <where>
+            o.user_id = #{userId}
+            <if test="status != null">
+                AND o.status = #{status}
+            </if>
+            AND o.is_deleted = 0
+        </where>
+        ORDER BY o.create_time DESC
+    </select>
+
+    <select id="getOrderStats" resultType="com.lpw.joyfoodmall.entity.DTO.OmsOrderStatsDTO">
+        SELECT
+            COUNT(CASE WHEN status = 0 AND is_deleted = 0 THEN 1 END) as status0,
+            COUNT(CASE WHEN status = 1 AND is_deleted = 0 THEN 1 END) as status1,
+            COUNT(CASE WHEN status = 2 AND is_deleted = 0 THEN 1 END) as status2,
+            COUNT(CASE WHEN status = 3 AND is_deleted = 0 THEN 1 END) as status3
+        FROM oms_order
+        WHERE user_id = #{userId}
+    </select>
+
+</mapper>

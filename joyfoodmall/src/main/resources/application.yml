@@ -1,0 +1,25 @@
+spring:
+    application:
+        name: JoyFoodMall
+    datasource:
+        url: jdbc:mysql://localhost:3308/joyfood_mall
+        username: root
+        password: 1234
+    web:
+        resources:
+            cache:
+                period: 0
+            chain:
+                cache: false
+    thymeleaf:
+        cache: false
+    servlet:
+        multipart:
+            maxFileSize: 5MB
+            maxRequestSize: 10MB
+file:
+    # 项目根目录下的 upload/ 文件夹
+    upload-path: uploads/
+    access-path: /files/
+jwt:
+    secretKey: k+u0tsRpxfYECmXxLU/d/pEYum3kqmYrd0kwy77jSOtj03V10JdXrABIkAtoPNZvOavVN2Y+nPnt8ToU8s3URQ==
