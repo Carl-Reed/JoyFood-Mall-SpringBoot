@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/mall/banner")
-public class mallBannerController {
+public class MallBannerController {
     private final PmsIndexBannerService bannerService;
     @GetMapping("/list")
     public Result<?> list(Integer limit){

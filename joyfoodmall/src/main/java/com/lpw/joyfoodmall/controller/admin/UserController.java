@@ -11,6 +11,8 @@ import com.lpw.joyfoodmall.entity.Role;
 import com.lpw.joyfoodmall.component.SecurityUser;
 import com.lpw.joyfoodmall.entity.User;
 import com.lpw.joyfoodmall.entity.DTO.UserDTO;
+import com.lpw.joyfoodmall.entity.UserRole;
+import com.lpw.joyfoodmall.service.UserRoleService;
 import com.lpw.joyfoodmall.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +31,7 @@ import java.util.*;
 public class UserController {
 
     private final UserService userService;
+    private final UserRoleService userRoleService;
     private final PasswordEncoder passwordEncoder;
     private final PasswordGenerator passwordGenerator;
 
@@ -104,6 +107,11 @@ public class UserController {
             String encodedPassword = passwordEncoder.encode(user.getPassword());
             user.setPassword(encodedPassword); // 设置加密后的密码
             userService.save(user);
+            // 给新增的用户默认的普通用户权限
+            UserRole userRole = new UserRole();
+            userRole.setUserId(Math.toIntExact(user.getId()));
+            userRole.setRoleId(4);
+            userRoleService.save(userRole);
             return Result.message("角色创建成功");
         } catch (Exception e) {
             return Result.error("角色创建失败: " + e.getMessage());
