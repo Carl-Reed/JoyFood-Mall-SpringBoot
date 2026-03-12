@@ -136,6 +136,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasRole('ROOT')")
     @DeleteMapping("delete/{id}")
     public Result<?> userDelete(@PathVariable Integer id,@AuthenticationPrincipal SecurityUser user) {
         try {

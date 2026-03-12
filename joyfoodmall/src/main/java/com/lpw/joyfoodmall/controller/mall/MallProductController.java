@@ -102,11 +102,8 @@ public class MallProductController {
             if (StrUtil.isNotBlank(keyword)) {
                 // 有搜索词：按销量排
                 wrapper.orderByDesc(Product::getSalesActual);
-            } else if (categoryId != null) {
-                // 有分类没搜索词：按排序字段或销量
-                wrapper.orderByAsc(Product::getSortOrder);
-            } else {
-                // 既没搜索、没分类、没排序：首页纯发现模式，使用随机
+            }else {
+                // 既没搜索、没分类：首页纯发现模式，使用随机
                 wrapper.last("ORDER BY RAND()");
             }
         }

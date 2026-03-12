@@ -9,6 +9,7 @@ import com.lpw.joyfoodmall.entity.VO.CartUserStatisticsVO;
 import com.lpw.joyfoodmall.mapper.OmsCartItemMapper;
 import com.lpw.joyfoodmall.service.OmsCartService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class OmsCartController {
     }
 
     /** 管理员移除某项购物车商品 */
+    @PreAuthorize("hasRole('ROOT')")
     @DeleteMapping("/{id}")
     public Result<String> delete(@PathVariable Long id) {
         cartService.removeById(id);
@@ -46,6 +48,7 @@ public class OmsCartController {
     }
 
     /** 一键清空指定用户的购物车 */
+    @PreAuthorize("hasRole('ROOT')")
     @DeleteMapping("/clear/{userId}")
     public Result<String> clearCart(@PathVariable Long userId) {
         cartService.remove(new LambdaQueryWrapper<OmsCartItem>()

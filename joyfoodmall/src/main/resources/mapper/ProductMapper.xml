@@ -21,6 +21,6 @@
 
         GROUP BY p.id
 
-        ORDER BY p.sort_order ASC, p.id DESC
+        ORDER BY p.id DESC
     </select>
 </mapper>

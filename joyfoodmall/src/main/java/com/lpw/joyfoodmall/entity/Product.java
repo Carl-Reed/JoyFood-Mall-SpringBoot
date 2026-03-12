@@ -19,7 +19,6 @@ public class Product extends BaseEntity {
     private String albumPics;
     private String detailHtml;
     private String unit;
-    private Integer sortOrder;
     private Integer isPublish;
     private Integer isNew;
     private Integer isRecommend;
