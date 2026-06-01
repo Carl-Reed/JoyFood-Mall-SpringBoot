@@ -148,20 +148,20 @@ joyfoodmall/
 │       │   ├── component/           # 自定义组件（如 JWT 过滤器）
 │       │   ├── config/              # 配置类（Security、MyBatis-Plus、CORS 等）
 │       │   ├── controller/          # 控制器层（REST API 接口）
-│       │   │   ├── admin/         # 后台管理接口
-│       │   │   └── mall/          # 前台商城接口
-│       │   ├── entity/            # 实体类
-│       │   │   ├── DTO/           # 数据传输对象（请求/响应参数）
-│       │   │   └── VO/            # 视图对象（返回前端的数据结构）
-│       │   ├── mapper/            # MyBatis-Plus 数据访问层
-│       │   ├── service/           # 业务逻辑层
-│       │   │   └── impl/          # 业务实现类
-│       │   ├── task/              # 定时任务（如订单超时取消、库存回滚）
-│       │   └── utils/             # 工具类（文件处理、密码生成等）
+│       │   │   ├── admin/           # 后台管理接口
+│       │   │   └── mall/            # 前台商城接口
+│       │   ├── entity/              # 实体类
+│       │   │   ├── DTO/             # 数据传输对象（请求/响应参数）
+│       │   │   └── VO/              # 视图对象（返回前端的数据结构）
+│       │   ├── mapper/              # MyBatis-Plus 数据访问层
+│       │   ├── service/             # 业务逻辑层
+│       │   │   └── impl/            # 业务实现类
+│       │   ├── task/                # 定时任务（如定时删除用户上传的无用文件）
+│       │   └── utils/               # 工具类（文件处理、密码生成等）
 │       └── resources/
-│           ├── mapper/            # MyBatis XML 映射文件
-│           └── application.yml    # 应用配置文件
-└── test/                          # 单元测试
+│           ├── mapper/              # MyBatis XML 映射文件
+│           └── application.yml      # 应用配置文件
+└── test/                            # 单元测试
 ```
 
 ### 分层架构说明
