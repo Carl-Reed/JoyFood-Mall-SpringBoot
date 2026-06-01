@@ -276,7 +276,7 @@ BCrypt 密码比对
 
 ## 📄 许可证
 
-本项目基于 [MIT License]([LICENSE](https://github.com/Carl-Reed/JoyFood-Mall-SpringBoot/blob/main/LICENSE)) 开源。
+本项目基于 [MIT License](https://github.com/Carl-Reed/JoyFood-Mall-SpringBoot/blob/main/LICENSE) 开源。
 
 <p align="center">
   <sub>Built with ❤️ by CarlReed | © 2026 JoyFood Mall</sub>
