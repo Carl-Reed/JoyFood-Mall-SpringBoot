@@ -145,7 +145,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void cancelOrder(Long orderId) {
+    public boolean cancelOrder(Long orderId) {
         Long currentUserId = SecurityUtils.getCurrentUserId();
         // 加上行锁查询订单，防止并发取消冲突，同时校验用户归属权
         OmsOrder order = this.getOne(new LambdaQueryWrapper<OmsOrder>()
@@ -154,31 +154,34 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
                 .last("FOR UPDATE"));
 
         if (order == null) {
-            throw new RuntimeException("订单不存在或无权操作");
+            log.warn("订单不存在或无权操作");
+            return false;
         }
 
-        doCancelOrder(order);
+        return doCancelOrder(order);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void cancelOrderInternal(Long orderId) {
+    public boolean cancelOrderInternal(Long orderId) {
         OmsOrder order = this.getOne(new LambdaQueryWrapper<OmsOrder>()
                 .eq(OmsOrder::getId, orderId)
                 .last("FOR UPDATE"));
 
         if (order == null || order.getStatus() == 4) {
             log.warn("MQ触发自动取消：订单不存在或已关闭，跳过处理。订单ID: {}", orderId);
-            return;
+            return false;
         }
-        doCancelOrder(order);
+        return doCancelOrder(order);
     }
 
     // 公共取消订单逻辑
-    private void doCancelOrder(OmsOrder order) {
+    private boolean doCancelOrder(OmsOrder order) {
         // 只有待支付(0)的订单能取消
         if (order.getStatus() != 0) {
-            throw new RuntimeException("当前订单状态无法取消（可能已支付）");
+            log.info("MQ触发自动取消拦截：订单 {} 当前状态为 {} (可能已支付)，跳过取消",
+                    order.getId(), order.getStatus());
+            return false;
         }
 
         // 更新订单状态为已关闭(4)
@@ -197,6 +200,7 @@ public class OmsOrderServiceImpl extends ServiceImpl<OmsOrderMapper, OmsOrder> i
                         order.getId(), item.getProductSkuId());
             }
         }
+        return true;
     }
 
     @Override

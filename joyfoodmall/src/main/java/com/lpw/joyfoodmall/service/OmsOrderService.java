@@ -10,10 +10,10 @@ public interface OmsOrderService extends IService<OmsOrder> {
     String createOrder(Long userId, OrderParamDTO orderParam);
 
     /** 取消订单（验证用户身份） */
-    void cancelOrder(Long orderId);
+    boolean cancelOrder(Long orderId);
 
     /** 取消订单（MQ消息到期自动调用） */
-    void cancelOrderInternal(Long orderId);
+    boolean cancelOrderInternal(Long orderId);
 
     /** 删除订单 */
     void deleteOrder(Long orderId);

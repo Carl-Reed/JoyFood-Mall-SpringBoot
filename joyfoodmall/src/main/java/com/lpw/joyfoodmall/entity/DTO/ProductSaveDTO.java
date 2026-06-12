@@ -26,7 +26,7 @@ public class ProductSaveDTO {
         private BigDecimal price;
         private BigDecimal promotionPrice;
         private Integer stock;
-        private Integer lowStock;
+        private Integer lockStock;
         private String specName; // 格式如 "颜色:红;尺寸:M"
         private String pic;
         private String spData;
