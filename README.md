@@ -7,6 +7,7 @@
   <img src="https://img.shields.io/badge/MyBatis--Plus-3.5.12-red" alt="MyBatis-Plus">
   <img src="https://img.shields.io/badge/Spring%20Security-6.x-yellow" alt="Spring Security">
   <img src="https://img.shields.io/badge/JWT-HS256-purple" alt="JWT">
+  <img src="https://img.shields.io/badge/RabbitMQ-3.13.x-orange" alt="RabbitMQ">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
 </p>
 
@@ -31,6 +32,7 @@ JoyFood 食品商城管理系统是一套面向中小型食品零售商的数字
 - **🔒 RBAC 权限控制**：基于角色的访问控制，支持 ROOT / ADMIN / MERCHANT / USER 四级角色
 - **🗑️ 逻辑删除机制**：关键数据表采用逻辑删除，保障历史订单可追溯性
 - **📁 文件资源管理**：异步图片上传、引用状态追踪、过期自动清理
+- **🐇 异步消息解耦**：集成 **RabbitMQ**，利用延迟交换机（`x-delayed-message`）实现订单超时自动取消，提升系统响应速度与可靠性
 
 ---
 
@@ -45,6 +47,7 @@ JoyFood 食品商城管理系统是一套面向中小型食品零售商的数字
 | 认证机制 | JWT (JSON Web Token) | - |
 | 密码加密 | BCrypt | - |
 | 数据库 | MySQL | 8.0.41 |
+| 消息中间件 | RabbitMQ | 3.13.7 |
 | 构建工具 | Maven | - |
 | 开发工具 | IntelliJ IDEA | 2022.2+ |
 
@@ -57,6 +60,7 @@ JoyFood 食品商城管理系统是一套面向中小型食品零售商的数字
 - JDK 21+
 - Maven 3.8+
 - MySQL 8.0+
+- RabbitMQ 3.13.7 (需启用 `rabbitmq_delayed_message_exchange` 插件)
 - IntelliJ IDEA（推荐）
 
 ### 1. 克隆项目
@@ -87,6 +91,12 @@ spring:
   # JWT 配置
   jwt:
     secret: your-secret-key-here
+  # RabbitMQ 配置
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 ```
 
@@ -117,12 +127,61 @@ java -jar target/joyfoodmall-1.0.0.jar
 
 ### Docker 部署（可选）
 
-```bash
-# 构建镜像
-docker build -t joyfoodmall
+## docker-compose
+`docker-compose.yml`文件：
+```yaml
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: joyfood-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: joyfood_mall
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
 
-# 运行容器
-docker run -d -p 8080:8080   -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/joyfood_mall   -e SPRING_DATASOURCE_USERNAME=root   -e SPRING_DATASOURCE_PASSWORD=password   joyfoodmall
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: joyfood-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: adminpass
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    # 启用延迟消息插件（如果镜像默认未包含）
+    command: >
+      sh -c "rabbitmq-plugins enable rabbitmq_delayed_message_exchange && 
+             rabbitmq-server"
+
+  backend:
+    build: .
+    container_name: joyfood-backend
+    depends_on:
+      - mysql
+      - rabbitmq
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/joyfood_mall
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: admin
+      SPRING_RABBITMQ_PASSWORD: adminpass
+
+volumes:
+  mysql-data:
+```
+
+启动命令：
+
+```bash
+docker-compose up -d
 ```
 
 ---
