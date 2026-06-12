@@ -103,11 +103,7 @@ public class OmsOrderController {
             return Result.error("当前订单状态无法支付，无法操作");
         }
 
-        order.setId(id);
-        order.setPayType(payType);
-        order.setStatus(1); //状态设为待发货
-        order.setPaymentTime(LocalDateTime.now());
-        orderService.updateById(order);
+        orderService.paySuccess(id,payType);
         return Result.message("支付成功，商品待发货");
     }
 

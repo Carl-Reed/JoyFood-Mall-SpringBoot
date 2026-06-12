@@ -19,6 +19,8 @@ public class SkuStock extends BaseEntity {
     private BigDecimal promotionPrice;
     private Integer stock;
     private Integer lowStock;
+    /** 锁定库存（已下单未支付） */
+    private Integer lockStock;
     private String pic;
     private String spData; // 存储规格 JSON，如 [{"key":"颜色","value":"黑色"}]
     private Integer isPublish;

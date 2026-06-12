@@ -130,6 +130,7 @@ public class MallProductController {
         return Result.success(product);
     }
 
+    // 获取商品规格详情
     @GetMapping("/sku/{skuId}")
     public Result<?> getProductDetailBySku(@PathVariable Long skuId){
         SkuStock skuStock = skuStockService.getById(skuId);
